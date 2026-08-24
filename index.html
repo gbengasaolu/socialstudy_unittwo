@@ -1,0 +1,1382 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#163b65" />
+  <title>Civics Quest | Grade 3 Study Game</title>
+  <style>
+    :root{
+      --navy:#163b65;
+      --blue:#2f6fb2;
+      --sky:#dff1ff;
+      --cream:#fffaf1;
+      --gold:#f3c75f;
+      --green:#2e8b68;
+      --green2:#e7f7ef;
+      --red:#c94747;
+      --red2:#fff0f0;
+      --purple:#6c5bb8;
+      --ink:#193044;
+      --muted:#5d7082;
+      --card:#ffffff;
+      --line:#dce6ef;
+      --shadow:0 14px 36px rgba(22,59,101,.12);
+      --radius:22px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: ui-rounded, "Avenir Next", "Trebuchet MS", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(circle at 10% 0%, #edf8ff 0, transparent 32%),
+        radial-gradient(circle at 100% 10%, #fff4cb 0, transparent 28%),
+        #f6f9fc;
+      line-height:1.55;
+    }
+
+    button, select, input{font:inherit}
+    button{cursor:pointer}
+
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:20;
+      background:rgba(255,255,255,.94);
+      backdrop-filter:blur(10px);
+      border-bottom:1px solid var(--line);
+    }
+
+    .topbar-inner{
+      max-width:1180px;
+      margin:auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+      padding:12px 20px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:900;
+      color:var(--navy);
+      letter-spacing:.2px;
+    }
+
+    .brand-mark{
+      width:38px;
+      height:38px;
+      border-radius:12px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(145deg,var(--navy),var(--blue));
+      color:#fff;
+      font-weight:900;
+      box-shadow:0 8px 20px rgba(22,59,101,.2);
+    }
+
+    .progress-wrap{
+      min-width:280px;
+      flex:1;
+      max-width:520px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    .progress-track{
+      height:12px;
+      background:#e9eef4;
+      border-radius:999px;
+      overflow:hidden;
+      flex:1;
+    }
+
+    .progress-bar{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,var(--blue),var(--green));
+      transition:width .35s ease;
+    }
+
+    .score-chip{
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:#fff;
+      padding:7px 11px;
+      font-weight:800;
+      white-space:nowrap;
+      color:var(--navy);
+    }
+
+    .shell{
+      width:min(1180px, calc(100% - 32px));
+      margin:0 auto 80px;
+    }
+
+    .hero{
+      margin:28px 0 20px;
+      border-radius:32px;
+      overflow:hidden;
+      background:
+        linear-gradient(120deg, rgba(22,59,101,.98), rgba(47,111,178,.92)),
+        var(--navy);
+      color:#fff;
+      padding:46px;
+      box-shadow:var(--shadow);
+      position:relative;
+    }
+
+    .hero:after{
+      content:"";
+      position:absolute;
+      width:330px;
+      height:330px;
+      border-radius:50%;
+      right:-110px;
+      top:-120px;
+      border:48px solid rgba(255,255,255,.08);
+    }
+
+    .eyebrow{
+      text-transform:uppercase;
+      letter-spacing:1.4px;
+      font-size:.8rem;
+      font-weight:900;
+      opacity:.85;
+    }
+
+    h1{
+      margin:.2rem 0 .6rem;
+      font-size:clamp(2rem,5vw,4.3rem);
+      line-height:1.02;
+      max-width:800px;
+    }
+
+    .hero p{
+      max-width:780px;
+      font-size:1.08rem;
+      color:#eaf5ff;
+      margin:.4rem 0 1.1rem;
+    }
+
+    .hero-actions,.section-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .btn{
+      border:0;
+      border-radius:14px;
+      padding:12px 16px;
+      font-weight:900;
+      transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+    }
+
+    .btn:hover{transform:translateY(-1px)}
+    .btn-primary{
+      background:var(--gold);
+      color:#402f00;
+      box-shadow:0 8px 20px rgba(243,199,95,.25);
+    }
+    .btn-secondary{
+      background:#fff;
+      color:var(--navy);
+    }
+    .btn-ghost{
+      background:#eef5fb;
+      color:var(--navy);
+      border:1px solid #cfe0ee;
+    }
+    .btn-danger{
+      background:#fff2f2;
+      color:#9b2d2d;
+      border:1px solid #f0caca;
+    }
+
+    .navgrid{
+      display:grid;
+      grid-template-columns:repeat(6,1fr);
+      gap:10px;
+      margin:18px 0 28px;
+    }
+
+    .navgrid a{
+      text-decoration:none;
+      color:var(--navy);
+      background:#fff;
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px 10px;
+      text-align:center;
+      font-weight:900;
+      box-shadow:0 6px 18px rgba(22,59,101,.06);
+    }
+
+    section{
+      scroll-margin-top:90px;
+      margin:34px 0;
+    }
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:end;
+      margin-bottom:14px;
+    }
+
+    .section-head h2{
+      margin:0;
+      color:var(--navy);
+      font-size:clamp(1.65rem,3vw,2.4rem);
+    }
+
+    .section-head p{
+      margin:.25rem 0 0;
+      color:var(--muted);
+      max-width:760px;
+    }
+
+    .grid{
+      display:grid;
+      gap:16px;
+    }
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:20px;
+      box-shadow:0 8px 26px rgba(22,59,101,.07);
+    }
+
+    .card h3{
+      margin:.2rem 0 .65rem;
+      color:var(--navy);
+    }
+
+    .kicker{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:.78rem;
+      font-weight:900;
+      background:#edf6ff;
+      color:var(--blue);
+      margin-bottom:8px;
+    }
+
+    .study-card{
+      position:relative;
+      overflow:hidden;
+    }
+
+    .study-card .letter{
+      width:48px;
+      height:48px;
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      font-size:1.35rem;
+      font-weight:1000;
+      color:#fff;
+      background:var(--blue);
+      margin-bottom:10px;
+    }
+
+    .study-card.leg .letter{background:#7c5acb}
+    .study-card.exe .letter{background:#2d83b7}
+    .study-card.jud .letter{background:#2e8b68}
+
+    .mini{
+      color:var(--muted);
+      font-size:.94rem;
+    }
+
+    .clean-list{
+      margin:.6rem 0 0;
+      padding-left:1.2rem;
+    }
+
+    .clean-list li{margin:.35rem 0}
+
+    .compare{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      border:1px solid var(--line);
+      border-radius:20px;
+      overflow:hidden;
+      background:#fff;
+    }
+
+    .compare > div{padding:20px}
+    .compare > div + div{border-left:1px solid var(--line)}
+    .compare h3{margin-top:0}
+
+    .federal{background:linear-gradient(180deg,#f2f8ff,#fff)}
+    .state{background:linear-gradient(180deg,#fff8e8,#fff)}
+
+    .memory-strip{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:10px;
+      margin-top:14px;
+    }
+
+    .memory-strip div{
+      border-radius:16px;
+      padding:14px;
+      text-align:center;
+      font-weight:900;
+      border:1px dashed #bfd1e0;
+      background:#fbfdff;
+    }
+
+    .quiz-card{
+      padding:0;
+      overflow:hidden;
+    }
+
+    .quiz-top{
+      padding:18px 20px;
+      background:linear-gradient(180deg,#f7fbff,#fff);
+      border-bottom:1px solid var(--line);
+    }
+
+    .quiz-body{padding:20px}
+
+    .question{
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:18px;
+      margin:0 0 14px;
+      background:#fff;
+    }
+
+    .question legend,.q-title{
+      font-weight:900;
+      color:var(--navy);
+      margin-bottom:10px;
+    }
+
+    .option{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      margin:8px 0;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid transparent;
+      transition:.15s ease;
+    }
+
+    .option:hover{
+      background:#f6f9fc;
+      border-color:#dbe7f1;
+    }
+
+    .feedback{
+      display:none;
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:12px;
+      font-weight:800;
+    }
+    .feedback.good{display:block;background:var(--green2);color:#176149}
+    .feedback.bad{display:block;background:var(--red2);color:#9a3030}
+
+    .blank-row{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 220px;
+      gap:12px;
+      align-items:center;
+      padding:12px 0;
+      border-bottom:1px solid #edf1f5;
+    }
+    .blank-row:last-child{border-bottom:0}
+
+    select,.text-input{
+      width:100%;
+      padding:11px 12px;
+      border:1px solid #bdccda;
+      border-radius:12px;
+      background:#fff;
+      color:var(--ink);
+    }
+
+    .match-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+    }
+
+    .match-item{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+      background:#fff;
+    }
+
+    .sort-board{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
+
+    .dropzone{
+      min-height:180px;
+      border:2px dashed #b9ccdc;
+      border-radius:18px;
+      padding:14px;
+      background:#fbfdff;
+    }
+
+    .sort-card{
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px;
+      background:#fff;
+      margin:8px 0;
+      box-shadow:0 4px 12px rgba(22,59,101,.06);
+    }
+
+    .sort-buttons{
+      display:flex;
+      gap:8px;
+      margin-top:8px;
+      flex-wrap:wrap;
+    }
+
+    .mini-btn{
+      border:1px solid #bfd1e0;
+      border-radius:999px;
+      background:#fff;
+      color:var(--navy);
+      font-weight:900;
+      padding:7px 10px;
+    }
+
+    .statusline{
+      min-height:28px;
+      color:var(--muted);
+      font-weight:800;
+      margin:10px 0 0;
+    }
+
+    .mastery{
+      background:linear-gradient(135deg,#172f4c,#254f7d);
+      color:#fff;
+      border:none;
+    }
+
+    .mastery h2,.mastery h3{color:#fff}
+    .mastery p{color:#e6f0f8}
+
+    .meter{
+      background:rgba(255,255,255,.15);
+      height:16px;
+      border-radius:999px;
+      overflow:hidden;
+      margin:10px 0 6px;
+    }
+
+    .meter > div{
+      height:100%;
+      width:0%;
+      background:linear-gradient(90deg,#f3c75f,#bde9c7);
+      transition:width .35s ease;
+    }
+
+    .badge{
+      display:inline-block;
+      padding:7px 10px;
+      border-radius:999px;
+      background:rgba(255,255,255,.14);
+      border:1px solid rgba(255,255,255,.22);
+      margin-right:6px;
+      margin-top:6px;
+      font-weight:900;
+      font-size:.83rem;
+    }
+
+    .exam-q{
+      background:#fff;
+      color:var(--ink);
+      border-radius:18px;
+      padding:16px;
+      margin:12px 0;
+    }
+
+    .exam-q label{
+      display:block;
+      padding:6px 0;
+    }
+
+    .results-box{
+      border-radius:18px;
+      padding:16px;
+      margin-top:14px;
+      background:rgba(255,255,255,.1);
+      border:1px solid rgba(255,255,255,.2);
+    }
+
+    .callout{
+      border-left:5px solid var(--gold);
+      background:#fffaf0;
+      border-radius:14px;
+      padding:14px 16px;
+      margin:14px 0;
+    }
+
+    .footer{
+      margin-top:40px;
+      text-align:center;
+      color:var(--muted);
+      font-size:.9rem;
+      padding:24px 0;
+    }
+
+    .hidden{display:none!important}
+
+    @media (max-width:900px){
+      .navgrid{grid-template-columns:repeat(3,1fr)}
+      .grid-3,.grid-4{grid-template-columns:1fr 1fr}
+      .topbar-inner{align-items:flex-start}
+      .progress-wrap{min-width:0}
+    }
+
+    @media (max-width:680px){
+      .shell{width:min(100% - 20px,1180px)}
+      .hero{padding:28px 22px;border-radius:24px}
+      .topbar-inner{flex-direction:column}
+      .progress-wrap{width:100%;max-width:none}
+      .navgrid{grid-template-columns:1fr 1fr}
+      .grid-2,.grid-3,.grid-4,.compare,.match-grid,.sort-board{grid-template-columns:1fr}
+      .compare > div + div{border-left:0;border-top:1px solid var(--line)}
+      .blank-row{grid-template-columns:1fr}
+      .memory-strip{grid-template-columns:1fr}
+    }
+
+    @media print{
+      .topbar,.navgrid,.hero-actions,.section-actions,.btn,.mini-btn{display:none!important}
+      body{background:#fff}
+      .shell{width:100%;margin:0}
+      .card,.hero{box-shadow:none}
+      section{break-inside:avoid}
+      .hero{color:#000;background:#fff;border:1px solid #ccc}
+      .hero p{color:#333}
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="brand-mark">CQ</div>
+        <div>
+          <div>Civics Quest</div>
+          <div style="font-size:.78rem;color:#6b7d8c;font-weight:700">Grade 3 mastery practice</div>
+        </div>
+      </div>
+      <div class="progress-wrap" aria-label="Overall practice progress">
+        <div class="progress-track"><div class="progress-bar" id="overallProgress"></div></div>
+        <div class="score-chip" id="scoreChip">0% complete</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="hero" id="home">
+      <div class="eyebrow">Unit 2: Civics and Government</div>
+      <h1>Federal, State, Branches, Rights and the Common Good</h1>
+      <p>
+        Study the big ideas in simple language, then practice them in different ways until the ideas feel automatic.
+        The mastery target in this game is 95% or higher.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#study" style="text-decoration:none">Start with the study guide</a>
+        <a class="btn btn-secondary" href="#mastery" style="text-decoration:none">Go to mastery challenge</a>
+        <button class="btn btn-secondary" onclick="speakPage()">Read key ideas aloud</button>
+      </div>
+    </section>
+
+    <nav class="navgrid" aria-label="Page sections">
+      <a href="#study">Study</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#fill">Fill Gaps</a>
+      <a href="#match">Match</a>
+      <a href="#sort">Sort</a>
+      <a href="#mastery">Mastery</a>
+    </nav>
+
+    <section id="study">
+      <div class="section-head">
+        <div>
+          <h2>1. Learn the big ideas</h2>
+          <p>Short explanations first. These ideas come directly from the Unit 2 text set.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <span class="kicker">Big Idea 1</span>
+          <h3>“We the People” means citizens have power</h3>
+          <p>
+            The Constitution begins with “We the People.” The study guide explains that government power belongs to the citizens.
+          </p>
+          <ul class="clean-list">
+            <li>The United States is a <strong>representative democracy</strong>, also called a <strong>republic</strong>.</li>
+            <li>Citizens elect <strong>representatives</strong> to make government decisions.</li>
+            <li>Citizens can choose different leaders in future elections.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="kicker">Big Idea 2</span>
+          <h3>Federal laws and state laws are different</h3>
+          <p>
+            <strong>Federal</strong> means national. Federal laws affect people across the whole country.
+            <strong>State</strong> laws focus on people living in that state.
+          </p>
+          <div class="callout"><strong>Memory clue:</strong> Federal = whole country. State = one state.</div>
+        </div>
+      </div>
+
+      <div class="compare" style="margin-top:16px">
+        <div class="federal">
+          <h3>Federal examples from the text</h3>
+          <ul class="clean-list">
+            <li>Women over 18 have the right to vote.</li>
+            <li>Citizens can worship any religion they choose.</li>
+          </ul>
+        </div>
+        <div class="state">
+          <h3>Georgia examples from the text</h3>
+          <ul class="clean-list">
+            <li>Students must go to school 180 days each year.</li>
+            <li>Drivers cannot hold a phone in their hands while driving.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="section-head" style="margin-top:30px">
+        <div>
+          <h2>The three branches</h2>
+          <p>Both the federal government and Georgia have legislative, executive, and judicial branches.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <article class="card study-card leg">
+          <div class="letter">L</div>
+          <h3>Legislative</h3>
+          <p><strong>Main job:</strong> makes and passes laws and approves the budget.</p>
+          <p class="mini"><strong>Federal leader:</strong> Congress</p>
+          <p class="mini"><strong>Georgia leader:</strong> The General Assembly</p>
+        </article>
+
+        <article class="card study-card exe">
+          <div class="letter">E</div>
+          <h3>Executive</h3>
+          <p><strong>Main job:</strong> enforces laws.</p>
+          <p class="mini"><strong>Federal leader:</strong> the president</p>
+          <p class="mini"><strong>Georgia leader:</strong> the governor</p>
+        </article>
+
+        <article class="card study-card jud">
+          <div class="letter">J</div>
+          <h3>Judicial</h3>
+          <p><strong>Main job:</strong> reviews laws to decide whether they are fair or unfair.</p>
+          <p class="mini"><strong>Federal leader:</strong> the Supreme Court</p>
+          <p class="mini"><strong>Georgia leader:</strong> the Supreme Court of Georgia</p>
+        </article>
+      </div>
+
+      <div class="memory-strip">
+        <div>L = Laws</div>
+        <div>E = Enforces</div>
+        <div>J = Judges review laws</div>
+      </div>
+
+      <div class="grid grid-2" style="margin-top:18px">
+        <div class="card">
+          <h3>Federal government details</h3>
+          <ul class="clean-list">
+            <li><strong>Congress</strong> makes and passes national laws.</li>
+            <li>Congress approves the <strong>national budget</strong>.</li>
+            <li>The <strong>president</strong> leads the executive branch.</li>
+            <li>The president is Commander in Chief of the U.S. military.</li>
+            <li>The <strong>Supreme Court</strong> leads the judicial branch.</li>
+            <li>The Supreme Court has <strong>nine justices</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3>Georgia government details</h3>
+          <ul class="clean-list">
+            <li>The <strong>General Assembly</strong> makes and passes state laws.</li>
+            <li>The General Assembly approves the <strong>state budget</strong>.</li>
+            <li>The <strong>governor</strong> leads the executive branch.</li>
+            <li>The governor lives and works in <strong>Atlanta</strong>, the state capital.</li>
+            <li>The <strong>Supreme Court of Georgia</strong> leads the judicial branch.</li>
+            <li>The Supreme Court of Georgia has <strong>nine justices</strong>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h3>Why three branches?</h3>
+        <p>
+          The Constitution separates government into three branches so one person or group cannot control everything.
+          Each branch has its own powers and jobs so one branch does not have more power than the others.
+        </p>
+      </div>
+
+      <div class="section-head" style="margin-top:30px">
+        <div>
+          <h2>Rights, responsibilities and the common good</h2>
+        </div>
+      </div>
+
+      <div class="grid grid-3">
+        <div class="card">
+          <span class="kicker">Rights</span>
+          <h3>Things the Constitution protects</h3>
+          <ul class="clean-list">
+            <li>Speak about a topic important to you.</li>
+            <li>Choose any religion.</li>
+            <li>Vote when you are 18 years old.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="kicker">Responsibilities</span>
+          <h3>Things citizens should do</h3>
+          <ul class="clean-list">
+            <li>Respect other citizens' rights.</li>
+            <li>Treat others with respect.</li>
+            <li>Obey rules and laws.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="kicker">Common Good</span>
+          <h3>Helping everyone in the community</h3>
+          <ul class="clean-list">
+            <li>Stay informed.</li>
+            <li>Vote when old enough.</li>
+            <li>Volunteer.</li>
+            <li>Communicate with public officials.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h3>Examples of promoting the common good</h3>
+        <p>
+          Follow rules so everyone stays safe, do not litter, learn about community news, help others,
+          and send a letter or email to a public official when you have a concern or something positive to share.
+        </p>
+      </div>
+    </section>
+
+    <section id="quiz">
+      <div class="section-head">
+        <div>
+          <h2>2. Quick quiz</h2>
+          <p>Choose the best answer. Check your work for immediate feedback.</p>
+        </div>
+      </div>
+
+      <div class="card quiz-card">
+        <div class="quiz-top">
+          <strong>Round 1: Core facts</strong>
+          <div class="mini">10 questions</div>
+        </div>
+        <div class="quiz-body" id="quizArea"></div>
+        <div class="section-actions" style="padding:0 20px 20px">
+          <button class="btn btn-primary" onclick="gradeQuiz()">Check quiz</button>
+          <button class="btn btn-ghost" onclick="resetQuiz()">Try again</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="fill">
+      <div class="section-head">
+        <div>
+          <h2>3. Fill in the gaps</h2>
+          <p>Use the dropdowns to complete each sentence.</p>
+        </div>
+      </div>
+      <div class="card" id="fillArea"></div>
+      <div class="section-actions">
+        <button class="btn btn-primary" onclick="gradeFill()">Check answers</button>
+        <button class="btn btn-ghost" onclick="resetFill()">Reset</button>
+      </div>
+      <div class="statusline" id="fillStatus"></div>
+    </section>
+
+    <section id="match">
+      <div class="section-head">
+        <div>
+          <h2>4. Matching challenge</h2>
+          <p>Match each clue with the correct branch, leader, or government level.</p>
+        </div>
+      </div>
+      <div class="match-grid" id="matchArea"></div>
+      <div class="section-actions">
+        <button class="btn btn-primary" onclick="gradeMatch()">Check matches</button>
+        <button class="btn btn-ghost" onclick="renderMatch()">New order</button>
+      </div>
+      <div class="statusline" id="matchStatus"></div>
+    </section>
+
+    <section id="sort">
+      <div class="section-head">
+        <div>
+          <h2>5. Sort it</h2>
+          <p>Classify examples from the text as federal or Georgia state examples.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <div id="sortCards"></div>
+        <div class="sort-board" style="margin-top:12px">
+          <div class="dropzone">
+            <h3>Federal</h3>
+            <div id="fedBin"></div>
+          </div>
+          <div class="dropzone">
+            <h3>Georgia State</h3>
+            <div id="stateBin"></div>
+          </div>
+        </div>
+        <div class="section-actions">
+          <button class="btn btn-primary" onclick="gradeSort()">Check sorting</button>
+          <button class="btn btn-ghost" onclick="renderSort()">Start over</button>
+        </div>
+        <div class="statusline" id="sortStatus"></div>
+      </div>
+    </section>
+
+    <section id="scenario">
+      <div class="section-head">
+        <div>
+          <h2>6. Rights, responsibilities or common good?</h2>
+          <p>Decide which idea best fits each example.</p>
+        </div>
+      </div>
+      <div class="card" id="scenarioArea"></div>
+      <div class="section-actions">
+        <button class="btn btn-primary" onclick="gradeScenario()">Check answers</button>
+        <button class="btn btn-ghost" onclick="resetScenario()">Reset</button>
+      </div>
+      <div class="statusline" id="scenarioStatus"></div>
+    </section>
+
+    <section id="mastery">
+      <div class="card mastery">
+        <div class="section-head">
+          <div>
+            <h2>7. Mastery challenge</h2>
+            <p>
+              A mixed 20-question assessment. Score 19 out of 20 or better to meet the 95% mastery target.
+              Retake it until you can do it without guessing.
+            </p>
+          </div>
+        </div>
+
+        <div class="meter" aria-label="Mastery score"><div id="masteryMeter"></div></div>
+        <div id="masteryLabel">Not attempted yet</div>
+
+        <div class="section-actions">
+          <button class="btn btn-primary" onclick="startExam()">Start a new challenge</button>
+          <button class="btn btn-secondary" onclick="gradeExam()">Grade challenge</button>
+        </div>
+
+        <div id="examArea"></div>
+        <div id="examResult" class="results-box hidden"></div>
+
+        <div style="margin-top:14px">
+          <span class="badge" id="badgeStudy">Study Guide</span>
+          <span class="badge" id="badgeQuiz">Quick Quiz</span>
+          <span class="badge" id="badgeFill">Fill Gaps</span>
+          <span class="badge" id="badgeMatch">Matching</span>
+          <span class="badge" id="badgeSort">Sorting</span>
+          <span class="badge" id="badgeScenario">Civics Ideas</span>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h3>Best way to use this before an assessment</h3>
+        <ol class="clean-list">
+          <li>Read the study cards once.</li>
+          <li>Complete every practice mode.</li>
+          <li>Review any answer you miss.</li>
+          <li>Take the mastery challenge.</li>
+          <li>Repeat until the score is at least 95% two times in a row.</li>
+          <li>Explain the three branches and federal versus state government aloud without looking.</li>
+        </ol>
+      </div>
+    </section>
+
+    <div class="footer">
+      Built as a self-contained Grade 3 practice page from the supplied Unit 2 Civics and Government text set.
+    </div>
+  </main>
+
+  <script>
+    const progress = JSON.parse(localStorage.getItem("civicsQuestProgress") || "{}");
+
+    const quizQuestions = [
+      {
+        q:"What does “federal” mean in this study guide?",
+        options:["One city","National","One classroom","One county"],
+        a:1,
+        why:"The text uses federal and national to mean the same level of government."
+      },
+      {
+        q:"What kind of government does the text call the United States?",
+        options:["A representative democracy or republic","A monarchy","A school council","A military government"],
+        a:0,
+        why:"Citizens elect representatives to make decisions in government."
+      },
+      {
+        q:"Which branch makes and passes laws?",
+        options:["Executive","Judicial","Legislative","Community"],
+        a:2,
+        why:"The legislative branch makes and passes laws."
+      },
+      {
+        q:"Who leads the federal executive branch?",
+        options:["Governor","President","Congress","Supreme Court"],
+        a:1,
+        why:"The president leads the federal executive branch."
+      },
+      {
+        q:"Who leads Georgia's executive branch?",
+        options:["Governor","President","General Assembly","Supreme Court"],
+        a:0,
+        why:"The governor leads Georgia's executive branch."
+      },
+      {
+        q:"Which branch reviews laws to decide if they are fair or unfair?",
+        options:["Legislative","Executive","Judicial","Local"],
+        a:2,
+        why:"The judicial branch reviews laws."
+      },
+      {
+        q:"How many justices does the federal Supreme Court have in the text?",
+        options:["3","5","7","9"],
+        a:3,
+        why:"The study guide states that the Supreme Court has nine justices."
+      },
+      {
+        q:"Which is a Georgia law example from the text?",
+        options:["Citizens can worship any religion","Women over 18 can vote","Students go to school 180 days each year","Congress approves the national budget"],
+        a:2,
+        why:"The 180-day school example appears under Georgia laws."
+      },
+      {
+        q:"Which is a responsibility?",
+        options:["Choose any religion","Speak about an important topic","Obey rules and laws","Vote at age 18"],
+        a:2,
+        why:"Obeying rules and laws is listed as a citizen responsibility."
+      },
+      {
+        q:"Why are there three separate branches?",
+        options:["So one person or group cannot control the government","So each state has a president","So judges make every law","So citizens cannot vote"],
+        a:0,
+        why:"The branches are separated so one person or group cannot control the government."
+      }
+    ];
+
+    const fillQuestions = [
+      {text:"The legislative branch makes and passes ____.", answer:"laws", choices:["laws","speeches","schools","votes"]},
+      {text:"The executive branch ____ laws.", answer:"enforces", choices:["enforces","writes every","removes all","ignores"]},
+      {text:"The judicial branch ____ laws.", answer:"reviews", choices:["reviews","prints","votes for","delivers"]},
+      {text:"The federal legislative branch is led by ____.", answer:"Congress", choices:["Congress","the governor","Atlanta","the president"]},
+      {text:"Georgia's legislative branch is led by ____.", answer:"The General Assembly", choices:["The General Assembly","Congress","the president","the U.S. military"]},
+      {text:"The governor lives and works in ____.", answer:"Atlanta", choices:["Atlanta","Washington","Congress","the Supreme Court"]},
+      {text:"The federal and Georgia Supreme Courts each have ____ justices in the text.", answer:"nine", choices:["nine","three","five","twelve"]},
+      {text:"Helping everyone in a school or community is called the ____.", answer:"common good", choices:["common good","national budget","executive branch","republic law"]}
+    ];
+
+    const matchQuestions = [
+      {prompt:"Makes and passes laws", answer:"Legislative", options:["Legislative","Executive","Judicial"]},
+      {prompt:"Enforces laws", answer:"Executive", options:["Legislative","Executive","Judicial"]},
+      {prompt:"Reviews laws", answer:"Judicial", options:["Legislative","Executive","Judicial"]},
+      {prompt:"Federal legislative leader", answer:"Congress", options:["Congress","President","Supreme Court"]},
+      {prompt:"Georgia legislative leader", answer:"General Assembly", options:["General Assembly","Governor","Supreme Court of Georgia"]},
+      {prompt:"Federal executive leader", answer:"President", options:["Congress","President","Supreme Court"]},
+      {prompt:"Georgia executive leader", answer:"Governor", options:["General Assembly","Governor","Supreme Court of Georgia"]},
+      {prompt:"Federal judicial leader", answer:"Supreme Court", options:["Congress","President","Supreme Court"]},
+      {prompt:"Georgia judicial leader", answer:"Supreme Court of Georgia", options:["General Assembly","Governor","Supreme Court of Georgia"]}
+    ];
+
+    const sortQuestions = [
+      {text:"Women over 18 have the right to vote.", answer:"federal"},
+      {text:"Citizens can worship any religion they choose.", answer:"federal"},
+      {text:"Students must go to school 180 days each year.", answer:"state"},
+      {text:"Drivers cannot hold a phone in their hands while driving.", answer:"state"}
+    ];
+
+    const scenarioQuestions = [
+      {text:"You speak about a topic that is important to you.", answer:"Right"},
+      {text:"You choose the religion you want to follow.", answer:"Right"},
+      {text:"You obey rules and laws.", answer:"Responsibility"},
+      {text:"You treat other people with respect.", answer:"Responsibility"},
+      {text:"You pick up trash in your neighborhood.", answer:"Common Good"},
+      {text:"You read community news so you stay informed.", answer:"Common Good"},
+      {text:"You send a respectful email to a public official about a concern.", answer:"Common Good"},
+      {text:"You volunteer to help people in your community.", answer:"Common Good"}
+    ];
+
+    const examBank = [
+      ...quizQuestions.map(x => ({q:x.q, options:x.options, answer:x.options[x.a], why:x.why})),
+      {q:"What phrase opens the U.S. Constitution in the text?", options:["We the People","We the States","We the Courts","We the Leaders"], answer:"We the People", why:"The text opens by explaining the phrase “We the People.”"},
+      {q:"Citizens elect people to act or speak for them. What are those people called?", options:["Representatives","Justices","Governors only","Teachers"], answer:"Representatives", why:"The text defines representatives as people elected to act or speak for citizens."},
+      {q:"Which level of government makes laws that affect everyone in the nation?", options:["Federal","State only","School","Neighborhood"], answer:"Federal", why:"Federal laws affect people across the nation."},
+      {q:"Which level makes laws about people who live in one state?", options:["State","Federal only","School only","None"], answer:"State", why:"State governments make and enforce laws for people living in that state."},
+      {q:"Who approves the national budget?", options:["Congress","President alone","Supreme Court","Governor"], answer:"Congress", why:"Congress makes laws and approves the national budget."},
+      {q:"Who approves Georgia's state budget?", options:["The General Assembly","Congress","President","Supreme Court"], answer:"The General Assembly", why:"The General Assembly approves Georgia's state budget."},
+      {q:"Which person is Commander in Chief of the U.S. military?", options:["President","Governor","Chief Justice","Member of Congress"], answer:"President", why:"The study guide states that the president is Commander in Chief."},
+      {q:"Where does the Georgia governor live and work according to the text?", options:["Atlanta","Savannah","Washington, D.C.","Athens"], answer:"Atlanta", why:"Atlanta is identified as Georgia's state capital."},
+      {q:"Which is a right listed in the text?", options:["Speak about a topic important to you","Ignore laws","Control every branch","Choose the state budget"], answer:"Speak about a topic important to you", why:"Speaking about an important topic is listed as a right."},
+      {q:"At what age does the text say a citizen has the right to vote?", options:["18","16","17","21"], answer:"18", why:"The right-to-vote example in the text says 18 years old."},
+      {q:"At what age does the text say you can register to vote?", options:["17 1/2","14","16","20"], answer:"17 1/2", why:"The common-good section says to register when old enough, listed as 17 1/2 years old."},
+      {q:"Which action helps promote the common good?", options:["Volunteer","Litter","Break rules","Ignore community concerns"], answer:"Volunteer", why:"Volunteering is listed as one way to promote the common good."},
+      {q:"Which action is an example of communicating with public officials?", options:["Send a letter or email about a concern","Ignore all officials","Write a school test","Make a private law"], answer:"Send a letter or email about a concern", why:"The text lists sending a letter or email to a public official."},
+      {q:"What does “stay informed” mean in the text?", options:["Pay attention to community news and discuss issues","Never read news","Only watch cartoons","Avoid community topics"], answer:"Pay attention to community news and discuss issues", why:"The text says to watch or read community news and discuss important issues."},
+      {q:"Why should citizens respect other people's rights?", options:["It is a responsibility","It is the job of Congress only","It replaces voting","It makes state laws federal"], answer:"It is a responsibility", why:"Respecting other citizens' rights is listed as a responsibility."},
+      {q:"What is one reason the Constitution gave each branch its own powers and jobs?", options:["So one branch does not have more power than the others","So only one branch can make every decision","So states have no government","So citizens cannot choose leaders"], answer:"So one branch does not have more power than the others", why:"The text explains that separate powers keep one branch from having more power than the others."},
+      {q:"Which pair is correct?", options:["Legislative: makes laws","Executive: reviews laws","Judicial: enforces laws","Legislative: leads the military"], answer:"Legislative: makes laws", why:"Legislative makes laws, executive enforces them, judicial reviews them."},
+      {q:"Which pair is correct for Georgia?", options:["Executive: governor","Legislative: president","Judicial: Congress","Executive: General Assembly"], answer:"Executive: governor", why:"Georgia's executive branch is led by the governor."},
+      {q:"Which pair is correct for the federal government?", options:["Judicial: Supreme Court","Executive: governor","Legislative: General Assembly","Judicial: Atlanta"], answer:"Judicial: Supreme Court", why:"The federal judicial branch is led by the Supreme Court."}
+    ];
+
+    function shuffle(arr){
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function saveProgress(key, value=true){
+      progress[key] = value;
+      localStorage.setItem("civicsQuestProgress", JSON.stringify(progress));
+      updateProgress();
+    }
+
+    function updateProgress(){
+      const keys = ["quiz","fill","match","sort","scenario"];
+      const completed = keys.filter(k => progress[k]).length;
+      const pct = Math.round((completed/keys.length)*100);
+      document.getElementById("overallProgress").style.width = pct + "%";
+      document.getElementById("scoreChip").textContent = pct + "% complete";
+
+      const badgeMap = {
+        quiz:"badgeQuiz", fill:"badgeFill", match:"badgeMatch",
+        sort:"badgeSort", scenario:"badgeScenario"
+      };
+      Object.entries(badgeMap).forEach(([k,id])=>{
+        const el=document.getElementById(id);
+        if(progress[k]){
+          el.style.background="rgba(189,233,199,.22)";
+          el.style.borderColor="rgba(189,233,199,.55)";
+        }
+      });
+      const studyBadge = document.getElementById("badgeStudy");
+      studyBadge.style.background="rgba(189,233,199,.22)";
+      studyBadge.style.borderColor="rgba(189,233,199,.55)";
+    }
+
+    function speakPage(){
+      if(!("speechSynthesis" in window)){
+        alert("Read-aloud is not supported in this browser.");
+        return;
+      }
+      speechSynthesis.cancel();
+      const text = `
+        Civics Quest. We the People means citizens have power.
+        Federal means national. Federal laws affect the whole country.
+        State laws focus on people who live in one state.
+        There are three branches.
+        Legislative makes and passes laws.
+        Executive enforces laws.
+        Judicial reviews laws.
+        Federal leaders are Congress, the president, and the Supreme Court.
+        Georgia leaders are the General Assembly, the governor, and the Supreme Court of Georgia.
+        Citizens have rights, including speaking about important topics, choosing a religion, and voting at age 18.
+        Citizens also have responsibilities, including respecting other people's rights, treating others with respect, and obeying rules and laws.
+        The common good means working together to help people in the school and community.
+      `;
+      const utter = new SpeechSynthesisUtterance(text);
+      utter.rate = 0.9;
+      speechSynthesis.speak(utter);
+    }
+
+    function renderQuiz(){
+      const area = document.getElementById("quizArea");
+      area.innerHTML = quizQuestions.map((x,i)=>`
+        <fieldset class="question" id="qq${i}">
+          <legend>${i+1}. ${x.q}</legend>
+          ${x.options.map((o,j)=>`
+            <label class="option">
+              <input type="radio" name="q${i}" value="${j}">
+              <span>${o}</span>
+            </label>
+          `).join("")}
+          <div class="feedback" id="qf${i}"></div>
+        </fieldset>
+      `).join("");
+    }
+
+    function gradeQuiz(){
+      let correct=0;
+      quizQuestions.forEach((x,i)=>{
+        const chosen=document.querySelector(`input[name="q${i}"]:checked`);
+        const fb=document.getElementById(`qf${i}`);
+        if(chosen && Number(chosen.value)===x.a){
+          correct++;
+          fb.className="feedback good";
+          fb.textContent="Correct. " + x.why;
+        }else{
+          fb.className="feedback bad";
+          fb.textContent="Review: " + x.why;
+        }
+      });
+      const pct=Math.round(correct/quizQuestions.length*100);
+      if(pct>=80) saveProgress("quiz");
+      alert(`Quick quiz score: ${correct}/${quizQuestions.length} (${pct}%).`);
+    }
+
+    function resetQuiz(){
+      renderQuiz();
+      window.location.hash="quiz";
+    }
+
+    function renderFill(){
+      document.getElementById("fillArea").innerHTML = fillQuestions.map((x,i)=>`
+        <div class="blank-row">
+          <div><strong>${i+1}.</strong> ${x.text}</div>
+          <select id="fill${i}" aria-label="Answer for fill in the gap question ${i+1}">
+            <option value="">Choose...</option>
+            ${shuffle(x.choices).map(c=>`<option>${c}</option>`).join("")}
+          </select>
+        </div>
+      `).join("");
+      document.getElementById("fillStatus").textContent="";
+    }
+
+    function gradeFill(){
+      let correct=0;
+      fillQuestions.forEach((x,i)=>{
+        const el=document.getElementById(`fill${i}`);
+        if(el.value===x.answer){
+          correct++;
+          el.style.borderColor="#2e8b68";
+          el.style.background="#e7f7ef";
+        }else{
+          el.style.borderColor="#c94747";
+          el.style.background="#fff0f0";
+        }
+      });
+      const pct=Math.round(correct/fillQuestions.length*100);
+      document.getElementById("fillStatus").textContent=`Score: ${correct}/${fillQuestions.length} (${pct}%).`;
+      if(pct>=80) saveProgress("fill");
+    }
+
+    function resetFill(){ renderFill(); }
+
+    function renderMatch(){
+      document.getElementById("matchArea").innerHTML = shuffle(matchQuestions).map((x,i)=>`
+        <div class="match-item">
+          <div class="q-title">${x.prompt}</div>
+          <select class="match-select" data-answer="${x.answer}">
+            <option value="">Choose...</option>
+            ${shuffle(x.options).map(o=>`<option>${o}</option>`).join("")}
+          </select>
+        </div>
+      `).join("");
+      document.getElementById("matchStatus").textContent="";
+    }
+
+    function gradeMatch(){
+      const sels=[...document.querySelectorAll(".match-select")];
+      let correct=0;
+      sels.forEach(el=>{
+        if(el.value===el.dataset.answer){
+          correct++;
+          el.style.background="#e7f7ef";
+          el.style.borderColor="#2e8b68";
+        }else{
+          el.style.background="#fff0f0";
+          el.style.borderColor="#c94747";
+        }
+      });
+      const pct=Math.round(correct/sels.length*100);
+      document.getElementById("matchStatus").textContent=`Score: ${correct}/${sels.length} (${pct}%).`;
+      if(pct>=80) saveProgress("match");
+    }
+
+    let sortState={};
+
+    function renderSort(){
+      sortState={};
+      document.getElementById("fedBin").innerHTML="";
+      document.getElementById("stateBin").innerHTML="";
+      document.getElementById("sortStatus").textContent="";
+      document.getElementById("sortCards").innerHTML = shuffle(sortQuestions).map((x,i)=>{
+        const id="sort_"+i+"_"+Math.random().toString(36).slice(2,7);
+        sortState[id]={...x,selected:null};
+        return `
+          <div class="sort-card" id="${id}">
+            <strong>${x.text}</strong>
+            <div class="sort-buttons">
+              <button class="mini-btn" onclick="placeSort('${id}','federal')">Federal</button>
+              <button class="mini-btn" onclick="placeSort('${id}','state')">Georgia State</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function placeSort(id,bin){
+      sortState[id].selected=bin;
+      const card=document.getElementById(id);
+      if(bin==="federal") document.getElementById("fedBin").appendChild(card);
+      else document.getElementById("stateBin").appendChild(card);
+    }
+
+    function gradeSort(){
+      const vals=Object.values(sortState);
+      const correct=vals.filter(x=>x.selected===x.answer).length;
+      vals.forEach((x,idx)=>{});
+      const pct=Math.round(correct/vals.length*100);
+      document.getElementById("sortStatus").textContent=`Score: ${correct}/${vals.length} (${pct}%).`;
+      if(pct===100) saveProgress("sort");
+    }
+
+    function renderScenario(){
+      document.getElementById("scenarioArea").innerHTML = scenarioQuestions.map((x,i)=>`
+        <div class="blank-row">
+          <div><strong>${i+1}.</strong> ${x.text}</div>
+          <select id="sc${i}">
+            <option value="">Choose...</option>
+            <option>Right</option>
+            <option>Responsibility</option>
+            <option>Common Good</option>
+          </select>
+        </div>
+      `).join("");
+      document.getElementById("scenarioStatus").textContent="";
+    }
+
+    function gradeScenario(){
+      let correct=0;
+      scenarioQuestions.forEach((x,i)=>{
+        const el=document.getElementById(`sc${i}`);
+        if(el.value===x.answer){
+          correct++;
+          el.style.background="#e7f7ef";
+          el.style.borderColor="#2e8b68";
+        }else{
+          el.style.background="#fff0f0";
+          el.style.borderColor="#c94747";
+        }
+      });
+      const pct=Math.round(correct/scenarioQuestions.length*100);
+      document.getElementById("scenarioStatus").textContent=`Score: ${correct}/${scenarioQuestions.length} (${pct}%).`;
+      if(pct>=80) saveProgress("scenario");
+    }
+
+    function resetScenario(){ renderScenario(); }
+
+    let currentExam=[];
+
+    function startExam(){
+      currentExam=shuffle(examBank).slice(0,20);
+      const area=document.getElementById("examArea");
+      area.innerHTML=currentExam.map((x,i)=>`
+        <div class="exam-q">
+          <div class="q-title">${i+1}. ${x.q}</div>
+          ${shuffle(x.options).map(o=>`
+            <label>
+              <input type="radio" name="exam${i}" value="${escapeHtml(o)}">
+              ${o}
+            </label>
+          `).join("")}
+          <div class="feedback" id="ef${i}"></div>
+        </div>
+      `).join("");
+      document.getElementById("examResult").classList.add("hidden");
+      document.getElementById("masteryMeter").style.width="0%";
+      document.getElementById("masteryLabel").textContent="Challenge in progress";
+    }
+
+    function escapeHtml(s){
+      return s.replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+    }
+
+    function gradeExam(){
+      if(!currentExam.length){
+        alert("Start a new challenge first.");
+        return;
+      }
+      let correct=0;
+      currentExam.forEach((x,i)=>{
+        const chosen=document.querySelector(`input[name="exam${i}"]:checked`);
+        const fb=document.getElementById(`ef${i}`);
+        const value=chosen ? chosen.value : "";
+        if(value===x.answer){
+          correct++;
+          fb.className="feedback good";
+          fb.textContent="Correct.";
+        }else{
+          fb.className="feedback bad";
+          fb.textContent="Review: " + x.why + ` Correct answer: ${x.answer}.`;
+        }
+      });
+      const pct=Math.round(correct/currentExam.length*100);
+      document.getElementById("masteryMeter").style.width=pct+"%";
+      document.getElementById("masteryLabel").textContent=`${correct}/20 correct: ${pct}%`;
+
+      const result=document.getElementById("examResult");
+      result.classList.remove("hidden");
+
+      if(pct>=95){
+        result.innerHTML=`
+          <h3>95% mastery target reached</h3>
+          <p>You scored ${correct}/20. Take the challenge one more time later. If you can score at least 95% again, the material is becoming very strong.</p>
+        `;
+        progress.mastery95=(progress.mastery95||0)+1;
+        localStorage.setItem("civicsQuestProgress",JSON.stringify(progress));
+      }else{
+        result.innerHTML=`
+          <h3>Keep building mastery</h3>
+          <p>You scored ${correct}/20. Review the questions marked “Review,” then try another challenge.</p>
+        `;
+      }
+    }
+
+    renderQuiz();
+    renderFill();
+    renderMatch();
+    renderSort();
+    renderScenario();
+    updateProgress();
+  </script>
+</body>
+</html>
